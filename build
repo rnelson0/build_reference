@@ -1,0 +1,52 @@
+# Modify these settings per application
+APPNAME='appname'
+APPDESCRIPTION='Reference application, change these variables'
+MAINTAINER_EMAIL='you@example.com'
+VENDOR='example.com'
+DISTRO='el7'
+
+# Modify the `version` and `iteration` files by hand if necessary
+VERSION=`if [ -f version ]; then cat version; else echo 0.1.0; fi`
+ITERATION=`if [ -f iteration ]; then cat iteration; else echo 1; fi`
+
+# Begin APP1
+export DESTDIR=`mktemp -d`
+echo "Creating build in $DESTDIR"
+make "${APPNAME}"
+if [ $? -ne 0 ]
+then
+  echo ""
+  echo "Make failed. Exiting. Check and clean $DESTDIR as needed."
+  exit 1
+fi
+
+fpm -s dir -t rpm -n "${APPNAME}" \
+  --description "${APPDESCRIPTION}" \
+  -m "${MAINTAINER_EMAIL}" \
+  --vendor "${VENDOR}" \
+  -d httpd \
+  --rpm-user root \
+  --rpm-group root \
+  -v "${VERSION}" \
+  --iteration "${ITERATION}.${DISTRO}" \
+  -C "${DESTDIR}" \
+  .
+
+if [ $? -ne 0 ]
+then
+  echo ""
+  echo "Build failed. Exiting. Check and clean ${DESTDIR} as needed."
+  exit 2
+fi
+
+if [[ $ITERATION < 1 ]]
+then
+  awk "BEGIN {print $ITERATION + 0.01}" > iteration
+else
+  expr $ITERATION + 1 > iteration
+fi
+
+echo ""
+echo "${APPNAME} build successful, removing ${DESTDIR}."
+echo "${DESTDIR}" | grep '^/tmp/tmp\.' >/dev/null && rm -rf "${DESTDIR}"
+# End APP1

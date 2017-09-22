@@ -1,0 +1,5 @@
+.*sw?
+.bundle/
+Gemfile.lock
+vendor/
+*rpm
