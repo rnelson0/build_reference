@@ -41,7 +41,7 @@ fi
 
 if [[ $ITERATION < 1 ]]
 then
-  awk "BEGIN {print $ITERATION + 0.01}" > iteration
+  printf "%.2f" $(awk "BEGIN {print $ITERATION + 0.01}") > iteration
 else
   expr $ITERATION + 1 > iteration
 fi
