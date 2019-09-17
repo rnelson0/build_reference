@@ -10,10 +10,14 @@ A simple reference architecture and guide for an automated build process driven 
 
 ## Usage
 Get started by pointing `setup.sh` at another directory with an application in it already:
+
     ./setup.sh ../otherapp
+    
 Change into the application's directory and edit the configuration files:
+
     cd ../otherapp
     vi {build,Makefile,version}
+    
 You can now run `build` in one of two ways:
 ### With global fpm
 ```
